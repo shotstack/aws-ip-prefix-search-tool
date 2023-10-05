@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS IP Prefix Search Tool</title>
+  <meta name="description" content="Search for AWS IP prefixes (IP addresses and ranges) by region and service.">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GA_ID');
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container my-5">
+    <h1>AWS IP Prefix Search Tool</h1>
+    <p>
+      Search for AWS IP prefixes (IP addresses and ranges) by region and service.
+    </p>
+    <form class="mt-5">
+      <div class="mb-3">
+        <label for="regionInput" class="form-label">Region:</label>
+        <select class="form-select" id="regionInput">
+          <option value="">Any</option>
+          <option value="GLOBAL">GLOBAL</option>
+          <option value="us-east-1">US East (N. Virginia) us-east-1</option>
+          <option value="us-east-2">US East (Ohio) us-east-2</option>
+          <option value="us-west-1">US West (N. California) us-west-1</option>
+          <option value="us-west-2">US West (Oregon) us-west-2</option>
+          <option value="af-south-1">Africa (Cape Town) af-south-1</option>
+          <option value="ap-east-1">Asia Pacific (Hong Kong) ap-east-1</option>
+          <option value="ap-south-1">Asia Pacific (Mumbai) ap-south-1</option>
+          <option value="ap-northeast-1">Asia Pacific (Tokyo) ap-northeast-1</option>
+          <option value="ap-northeast-2">Asia Pacific (Seoul) ap-northeast-2</option>
+          <option value="ap-southeast-1">Asia Pacific (Singapore) ap-southeast-1</option>
+          <option value="ap-southeast-2">Asia Pacific (Sydney) ap-southeast-2</option>
+          <option value="ca-central-1">Canada (Central) ca-central-1</option>
+          <option value="cn-north-1">China (Beijing) cn-north-1</option>
+          <option value="cn-northwest-1">China (Ningxia) cn-northwest-1</option>
+          <option value="eu-north-1">Europe (Stockholm) eu-north-1</option>
+          <option value="eu-west-1">Europe (Ireland) eu-west-1</option>
+          <option value="eu-west-2">Europe (London) eu-west-2</option>
+          <option value="eu-west-3">Europe (Paris) eu-west-3</option>
+          <option value="eu-central-1">Europe (Frankfurt) eu-central-1</option>
+          <option value="eu-south-1">Europe (Milan) eu-south-1</option>
+          <option value="me-south-1">Middle East (Bahrain) me-south-1</option>
+          <option value="sa-east-1">South America (São Paulo) sa-east-1</option>
+          <option value="us-gov-east-1">AWS GovCloud (US-East) us-gov-east-1</option>
+          <option value="us-gov-west-1">AWS GovCloud (US-West) us-gov-west-1</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="serviceInput" class="form-label">Service:</label>
+        <select class="form-select" id="serviceInput">
+          <option value="">Any</option>
+          <option value="AMAZON">AMAZON</option>
+          <option value="AMAZON_APPFLOW">AMAZON_APPFLOW</option>
+          <option value="AMAZON_CONNECT">AMAZON_CONNECT</option>
+          <option value="API_GATEWAY">API_GATEWAY</option>
+          <option value="CHIME_MEETINGS">CHIME_MEETINGS</option>
+          <option value="CHIME_VOICECONNECTOR">CHIME_VOICECONNECTOR</option>
+          <option value="CLOUD9">CLOUD9</option>
+          <option value="CLOUDFRONT">CLOUDFRONT</option>
+          <option value="CLOUDFRONT_ORIGIN_FACING">CLOUDFRONT_ORIGIN_FACING</option>
+          <option value="CODEBUILD">CODEBUILD</option>
+          <option value="DYNAMODB">DYNAMODB</option>
+          <option value="EBS">EBS</option>
+          <option value="EC2">EC2</option>
+          <option value="EC2_INSTANCE_CONNECT">EC2_INSTANCE_CONNECT</option>
+          <option value="GLOBALACCELERATOR">GLOBALACCELERATOR</option>
+          <option value="KINESIS_VIDEO_STREAMS">KINESIS_VIDEO_STREAMS</option>
+          <option value="MEDIA_PACKAGE_V2">MEDIA_PACKAGE_V2</option>
+          <option value="ROUTE53">ROUTE53</option>
+          <option value="ROUTE53_HEALTHCHECKS">ROUTE53_HEALTHCHECKS</option>
+          <option value="ROUTE53_HEALTHCHECKS_PUBLISHING">ROUTE53_HEALTHCHECKS_PUBLISHING</option>
+          <option value="ROUTE53_RESOLVER">ROUTE53_RESOLVER</option>
+          <option value="S3">S3</option>
+          <option value="WORKSPACES_GATEWAYS">WORKSPACES_GATEWAYS</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Version:</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="ipVersion" id="ipv4Radio" value="ipv4" checked>
+          <label class="form-check-label" for="ipv4Radio">
+            IPv4
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="ipVersion" id="ipv6Radio" value="ipv6">
+          <label class="form-check-label" for="ipv6Radio">
+            IPv6
+          </label>
+        </div>
+      </div>
+      
+
+      <button type="button" class="btn btn-primary" id="searchButton">Search</button>
+    </form>
+
+    <div id="searchResults" class="mt-3"></div>
+
+    <div class="mt-5">
+      <small>Built using <a href="https://www.openai.com/gpt-3/">ChatGPT</a> by <a
+          href="https://shotstack.io/">Shotstack</a>.</small>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      var searchResultsData = [];
+      var jsonData; // Variable to store JSON data
+
+      // Function to search prefixes by criteria
+      function searchByCriteria(criteria, version = 'ipv4') {
+        var results = [];
+        var list = version === 'ipv4' ? jsonData.prefixes : jsonData.ipv6_prefixes;
+
+        $.each(list, function (index, prefix) {
+          if (
+            (!criteria.region || prefix.region === criteria.region) &&
+            (!criteria.service || prefix.service === criteria.service)
+          ) {
+            results.push(prefix);
+          }
+        });
+        return results;
+      }
+
+      // Fetch the JSON data from the specified URL when the page loads
+      $.getJSON("https://ip-ranges.amazonaws.com/ip-ranges.json", function (data) {
+        jsonData = data;
+      });
+
+      // Event listener for the search button
+      $('#searchButton').click(function () {
+        var regionCriteria = $('#regionInput').val();
+        var serviceCriteria = $('#serviceInput').val();
+        var ipVersion = $('input[name="ipVersion"]:checked').val();
+  
+
+        if (!jsonData) {
+          $('#searchResults').html('<p>Loading data. Please wait...</p>');
+          return;
+        }
+
+        var criteria = {
+          region: regionCriteria,
+          service: serviceCriteria,
+        };
+
+        searchResultsData = searchByCriteria(criteria, ipVersion);
+
+        if (searchResultsData.length > 0) {
+          var resultHtml = '<h2>Search Results:</h2>';
+          resultHtml += '<div class="my-3">';
+          resultHtml += '<button type="button" class="btn btn-primary" id="downloadButton">Download CSV</button>';
+          resultHtml += '</div>';
+          resultHtml += '<div><p>Found <b>' + searchResultsData.length + '</b> results.</p></div>';
+          resultHtml += '<table class="table table-striped">';
+          resultHtml += '<thead><tr><th>Region</th><th>IP Prefix</th><th>Service</th><th>Network Border Group</th></tr></thead>';
+          resultHtml += '<tbody>';
+          $.each(searchResultsData, function (index, result) {
+            resultHtml += '<tr>';
+            resultHtml += '<td>' + result.region + '</td>';
+            resultHtml += '<td>' + (ipVersion === "ipv4" ? result.ip_prefix : result.ipv6_prefix) + '</td>';
+            resultHtml += '<td>' + result.service + '</td>';
+            resultHtml += '<td>' + result.network_border_group + '</td>';
+            resultHtml += '</tr>';
+          });
+          resultHtml += '</tbody>';
+          resultHtml += '</table>';
+          $('#searchResults').html(resultHtml);
+        } else {
+          $('#searchResults').html('<p>No results found for the specified criteria.</p>');
+        }
+      });
+
+      // Event listener for the download button
+      $(document).on('click', '#downloadButton', function () {
+        if (searchResultsData.length > 0) {
+          var ipVersion = $('input[name="ipVersion"]:checked').val();
+          var csvContent = "Region,IP Prefix,Service,Network Border Group\n";
+          $.each(searchResultsData, function (index, result) {
+            csvContent += result.region + ',' + (ipVersion === "ipv4" ? result.ip_prefix : result.ipv6_prefix) + ',' + result.service + ',' + result.network_border_group + "\n";
+          });
+
+          // Create a Blob with the CSV data
+          var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+          // Create a temporary download link and trigger the download
+          var link = document.createElement("a");
+          if (link.download !== undefined) {
+            var url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "search_results.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        } else {
+          alert("No results to download.");
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>
