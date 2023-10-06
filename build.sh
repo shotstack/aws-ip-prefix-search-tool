@@ -28,4 +28,7 @@ cp "$HTML_FILE" "$BUILD_FOLDER"
 NEW_HTML_FILE="$BUILD_FOLDER/$HTML_FILE"
 sed "s/GA_ID/$GA_ID/g" "$HTML_FILE" > "$NEW_HTML_FILE"
 
+rm -rf "$BUILD_FOLDER/img"
+cp -r img "$BUILD_FOLDER"
+
 echo "Google Analytics ID updated to $GA_ID in $NEW_HTML_FILE"
